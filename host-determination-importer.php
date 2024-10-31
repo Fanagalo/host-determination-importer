@@ -27,6 +27,7 @@ function create_temporary_table()
         parasite varchar(255) NOT NULL,
         genera_number varchar(255) NOT NULL,
         species_number varchar(255) NOT NULL,
+        parasite_with_image BOOL,
         PRIMARY KEY  (id)
     ) $charset_collate;";
 
