@@ -2,7 +2,7 @@
 /*
 Plugin Name: Host Determination Importer
 Description: A basic plugin to import CSV data into a custom MySQL table. Fundament by ChatGPT
-Version: 1.0
+Version: 1.02
 Author: Jaap Wiering
 */
 
@@ -27,6 +27,8 @@ function create_temporary_table()
         parasite varchar(255) NOT NULL,
         genera_number varchar(255) NOT NULL,
         species_number varchar(255) NOT NULL,
+        host_slug VARCHAR(200) NULL,
+        parasite_slug VARCHAR(200) NULL,
         parasite_with_image BOOL,
         PRIMARY KEY  (id)
     ) $charset_collate;";
@@ -107,6 +109,9 @@ function csv_import_data($csv_file)
                     'parasite' => sanitize_text_field($data[7]),
                     'genera_number' => sanitize_text_field($data[8]),
                     'species_number' => sanitize_text_field($data[9]),
+                    // todo: conditional for genera
+                    'host_slug' => sanitize_title($data[0]),
+                    'parasite_slug' => sanitize_title($data[7]),
                 )
 
             );
