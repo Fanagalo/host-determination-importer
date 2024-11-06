@@ -75,6 +75,17 @@ function host_determination_importer_page()
     }
 }
 
+// Function to give identify genera and add prefix 'genus-'
+function genus_prefix($hostname)
+{
+    if ($hostname == trim($hostname) && str_contains($hostname, ' ')) {
+        return sanitize_title($hostname);
+    } else {
+        return 'genus-' . sanitize_title($hostname);
+    };
+};
+
+
 // Function to process the CSV file and import data into table01
 function csv_import_data($csv_file)
 {
@@ -87,12 +98,12 @@ function csv_import_data($csv_file)
 
         // Loop through the CSV rows
         while (($data = fgetcsv($handle, 2000, ',')) !== false) {
-        
-        // Skip the first row if it contains column headers
-            if ($row == 0) {
-                $row++;
-                continue;
-            }
+
+            // Skip the first row if it contains column headers
+            // if ($row == 0) {
+            //     $row++;
+            //     continue;
+            // }
 
             // Insert data into the table
             $wpdb->insert(
@@ -102,15 +113,14 @@ function csv_import_data($csv_file)
                     'host' => sanitize_text_field($data[0]),
                     'organ' => sanitize_text_field($data[1]),
                     'mode' => sanitize_text_field($data[2]),
-                    'stage' => sanitize_text_field($data[3]),
+                    'stage' => sanitize_text_field(strtolower($data[3])),
                     'tax_top' => sanitize_text_field($data[4]),
                     'tax_middle' => sanitize_text_field($data[5]),
                     'tax_family' => sanitize_text_field($data[6]),
                     'parasite' => sanitize_text_field($data[7]),
                     'genera_number' => sanitize_text_field($data[8]),
                     'species_number' => sanitize_text_field($data[9]),
-                    // todo: conditional for genera
-                    'host_slug' => sanitize_title($data[0]),
+                    'host_slug' => genus_prefix($data[0]),
                     'parasite_slug' => sanitize_title($data[7]),
                 )
 
