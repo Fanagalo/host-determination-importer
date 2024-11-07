@@ -1,9 +1,12 @@
 <?php
 /*
 Plugin Name: Host Determination Importer
-Description: A basic plugin to import CSV data into a custom MySQL table. Fundament by ChatGPT
-Version: 1.02
+Description: Creates a temporary dedicated table on activation to import CSV data. During import creates slugs and modifies certain data. After renaming used for determination table on host pages. Foundation created by ChatGPT.
+Version: 1.04
 Author: Jaap Wiering
+Author URI: https://fanagalo.nl
+Text Domain: bladmineerders-fngl
+License: GPLv2
 */
 
 // Hook to create a new table when the plugin is activated
@@ -43,11 +46,11 @@ add_action('admin_menu', 'host_determination_importer_menu');
 function host_determination_importer_menu()
 {
     add_menu_page(
-        'Host Determination Importer',               // Page title
-        'Host Determination Importer',               // Menu title
-        'manage_options',             // Capability
-        'host-determination-importer',               // Menu slug
-        'host_determination_importer_page'           // Function to display page
+        'Host Determination Importer',      // Page title
+        'Host Determination Importer',      // Menu title
+        'manage_options',                   // Capability
+        'host-determination-importer',      // Menu slug
+        'host_determination_importer_page'  // Function to display page
     );
 }
 
@@ -85,11 +88,11 @@ function genus_prefix($hostname)
     };
 };
 
-
-// Function to process the CSV file and import data into table01
+// Function to process the CSV file and import data into 'temporary_table'
 function csv_import_data($csv_file)
 {
     global $wpdb;
+    // set_time_limit(300);    // 2024-11-07: does not solve restricted import
     $table_name = 'temporary_table';
 
     // Open the CSV file for reading
