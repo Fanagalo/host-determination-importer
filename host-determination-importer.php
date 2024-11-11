@@ -33,7 +33,8 @@ function create_temporary_table()
         host_slug VARCHAR(200) NULL,
         parasite_slug VARCHAR(200) NULL,
         parasite_with_image BOOL,
-        PRIMARY KEY  (id)
+        PRIMARY KEY  (id),
+        INDEX (host_slug)
     ) $charset_collate;";
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
