@@ -2,7 +2,7 @@
 /*
 Plugin Name: Host Determination Importer
 Description: Creates a temporary dedicated table on activation to import CSV data. During import creates slugs and modifies certain data. After renaming used for determination table on host pages. Foundation created by ChatGPT.
-Version: 1.04
+Version: 1.05
 Author: Jaap Wiering
 Author URI: https://fanagalo.nl
 Text Domain: bladmineerders-fngl
@@ -10,9 +10,9 @@ License: GPLv2
 */
 
 // Hook to create a new table when the plugin is activated
-register_activation_hook(__FILE__, 'create_temporary_table');
+register_activation_hook(__FILE__, 'fngl_create_temporary_table');
 
-function create_temporary_table()
+function fngl_create_temporary_table()
 {
     global $wpdb;
     $table_name = 'temporary_table';
@@ -42,21 +42,21 @@ function create_temporary_table()
 }
 
 // Hook to add admin menu page for CSV uploading
-add_action('admin_menu', 'host_determination_importer_menu');
+add_action('admin_menu', 'fngl_host_determination_importer_menu');
 
-function host_determination_importer_menu()
+function fngl_host_determination_importer_menu()
 {
     add_menu_page(
-        'Host Determination Importer',      // Page title
-        'Host Determination Importer',      // Menu title
-        'manage_options',                   // Capability
-        'host-determination-importer',      // Menu slug
-        'host_determination_importer_page'  // Function to display page
+        'Host Determination Importer',           // Page title
+        'Host Determination Importer',           // Menu title
+        'manage_options',                        // Capability
+        'host-determination-importer',           // Menu slug
+        'fngl_host_determination_importer_page'  // Function to display page
     );
 }
 
 // Admin page content for CSV upload
-function host_determination_importer_page()
+function fngl_host_determination_importer_page()
 {
 ?>
     <div class="wrap">
@@ -72,7 +72,7 @@ function host_determination_importer_page()
     // If form is submitted and a CSV file is uploaded
     if (isset($_POST['submit_csv'])) {
         if (!empty($_FILES['csv_file']['tmp_name'])) {
-            csv_import_data($_FILES['csv_file']['tmp_name']);
+            fngl_csv_import_data($_FILES['csv_file']['tmp_name']);
         } else {
             echo '<div class="error"><p>Please upload a CSV file.</p></div>';
         }
@@ -80,7 +80,7 @@ function host_determination_importer_page()
 }
 
 // Function to give identify genera and add prefix 'genus-'
-function genus_prefix($hostname)
+function fngl_genus_prefix($hostname)
 {
     if ($hostname == trim($hostname) && str_contains($hostname, ' ')) {
         return sanitize_title($hostname);
@@ -90,7 +90,7 @@ function genus_prefix($hostname)
 };
 
 // Function to process the CSV file and import data into 'temporary_table'
-function csv_import_data($csv_file)
+function fngl_csv_import_data($csv_file)
 {
     global $wpdb;
     // set_time_limit(300);    // 2024-11-07: does not solve restricted import
@@ -124,7 +124,7 @@ function csv_import_data($csv_file)
                     'parasite' => sanitize_text_field($data[7]),
                     'genera_number' => sanitize_text_field($data[8]),
                     'species_number' => sanitize_text_field($data[9]),
-                    'host_slug' => genus_prefix($data[0]),
+                    'host_slug' => fngl_genus_prefix($data[0]),
                     'parasite_slug' => sanitize_title($data[7]),
                 )
 
